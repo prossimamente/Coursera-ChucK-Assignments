@@ -1,0 +1,321 @@
+//Assignment_1_A_VeryVery_NewNew_World.ck
+
+//note for the reviewer: I know the code is somewhat redundant, it could be optimized and I was going to do it, but I had no more time.. sorry =)
+
+SinOsc bnoise=>dac; // Oscillator for the "swips" sounds starting at 10''
+
+SinOsc bass1=>dac;  // Oscillator for the bass you ear at the begining, the 3 oscillators will have very near frequencies so that they exhibit acoustical beats, here to give a rhythmic modulation
+SinOsc bass2=>dac;  // My script does exensive use of ACOUSTICAL BEATS,
+SinOsc bass3=>dac;  // see them on Wikipedia if you don't know what they are; do it! it's interesting =)
+                    // (it isn't to be considered something "advanced", as it's basic physics, I just discovered it right here.)
+
+TriOsc vpc1c=>dac;  // here the other 9 oscillators, 3 for each "voice" you ear, again with beats, here used to make a sound that doesn't start abruptly
+TriOsc vbc1c=>dac;
+TriOsc vsc1c=>dac;
+
+SinOsc vpc2c=>dac;
+SinOsc vbc2c=>dac;
+SinOsc vsc2c=>dac;
+
+SinOsc vpc3c=>dac;
+SinOsc vbc3c=>dac;
+SinOsc vsc3c=>dac;
+
+
+1.12246204830937 => float tone;         // costants for intervals, if f is the first frequency f*tone will be a tone above, f/tone a tone below, and so on
+1.05946309435930 => float semitone;
+1.02930223664349 => float quartertone;
+
+1::samp=>dur step;                      // the time will go on step by step
+now+30::second=>time end;               // end is the final time
+
+now=>time start;                    // start is the starting time 
+1=>float rap;                       // rap is a costant that moltiplies every duration
+4=>float vol;                       // vol is a costant that moltiplies every gain
+
+                                    // variables for the bass
+now=>time sali;                     // at sali the bass starts increasing gain
+now+6::second/rap=>time fermo;      // at fermo stops
+now+18::second/rap=>time scendbi;   // at scendbi stars decreasing gain
+now+24::second/rap=>time endb;      // untill endb
+
+55*tone*semitone=>float f;          // note for the bass (dodiesis)
+1*rap=>float v1;                    // frequency variations giving the beats
+4*rap=>float v2;
+
+f=>bass1.freq;                      // initialization of the oscillator
+f+v1=>bass2.freq;
+f+v2=>bass3.freq;
+
+0=>bass1.gain;
+0=>bass2.gain;
+0=>bass3.gain;
+
+                                    // here the variables for the voice "c1c"
+0=>int nc1c;                        // n is a counter giving the note we are playing right now in the sequence
+
+1=>float f01c1c;                    // sequence of the notes played by c1c (relative values, for example f01 = f1/f0)
+1.5=>float f12c1c;
+1.5=>float f23c1c;
+1=>float f34c1c; 
+4/(3.0*3.0)=>float f40c1c;
+
+110*2*tone=>float ffc1c;            // the starting note for c1c (si)
+ffc1c=>float fc1c;                  // f is the actual note is executing right now
+
+.51*rap=>float v0c1c;               // frequency variations giving the duration of each note (the duration is an half period of the envelope beat)
+1*rap=>float v1c1c;
+1*rap=>float v2c1c;
+1*rap=>float v3c1c;
+.5*rap=>float v4c1c;
+
+v0c1c=>float vc1c;                  // v is the actual frequency variation is executing right now
+
+(2/v0c1c)::second=>dur d0c1c;       // duration of each note
+(2/v1c1c)::second=>dur d1c1c;
+(2/v2c1c)::second=>dur d2c1c;
+(2/v3c1c)::second=>dur d3c1c;
+(2/v4c1c)::second=>dur d4c1c;
+
+start=>time t0c1c;                  // starting time of each note
+t0c1c+d0c1c=>time t1c1c;
+t1c1c+d1c1c=>time t2c1c;
+t2c1c+d2c1c=>time t3c1c;
+t3c1c+d3c1c=>time t4c1c;
+
+t4c1c-t0c1c+d4c1c=>dur durationc1c; // duration of the sequence
+
+vol*.4*0=>float g0c1c;              // gains for each note
+vol*.4*0.005=>float g1c1c;
+vol*.4*0.01=>float g2c1c;
+vol*.4*0.02=>float g3c1c;
+vol*.4*0=>float g4c1c;
+
+g0c1c=>float gc1c;                  // the actual gain is executing right now
+
+fc1c => vpc1c.freq;                 // here the oscillators for c1c are initialized
+fc1c+vc1c/2 => vbc1c.freq;
+fc1c+vc1c => vsc1c.freq;
+
+gc1c => vpc1c.gain;
+-gc1c*2 => vbc1c.gain;
+gc1c => vsc1c.gain;
+
+
+0=>int notac2c;                     // variables for c2c, just the same as above
+
+1=>float f01c2c;
+1.5=>float f12c2c;
+1.5=>float f23c2c;
+1=>float f34c2c; 
+4/(3.0*3.0)=>float f40c2c;
+
+110*4/3.0=>float ffc2c;
+ffc2c=>float fc2c;
+
+.53*rap=>float v0c2c;
+1*rap=>float v1c2c;
+1*rap=>float v2c2c;
+1*rap=>float v3c2c;
+.5*rap=>float v4c2c;
+
+v0c2c=>float vc2c;
+
+(2/v0c2c)::second=>dur d0c2c;
+(2/v1c2c)::second=>dur d1c2c;
+(2/v2c2c)::second=>dur d2c2c;
+(2/v3c2c)::second=>dur d3c2c;
+(2/v4c2c)::second=>dur d4c2c;
+
+start=>time t0c2c;
+t0c2c+d0c2c=>time t1c2c;
+t1c2c+d1c2c=>time t2c2c;
+t2c2c+d2c2c=>time t3c2c;
+t3c2c+d3c2c=>time t4c2c;
+
+t4c2c-t0c2c+d4c2c=>dur durationc2c;
+
+vol*0=>float g0c2c;
+vol*0.005=>float g1c2c;
+vol*0.01=>float g2c2c;
+vol*0.02=>float g3c2c;
+vol*0=>float g4c2c;
+
+g0c2c*vol=>float gc2c;
+
+fc2c => vpc2c.freq;
+fc2c+vc2c/2 => vbc2c.freq;
+fc2c+vc2c => vsc2c.freq;
+
+gc2c => vpc2c.gain;
+-gc2c*2 => vbc2c.gain;
+gc2c => vsc2c.gain;
+
+0=>int nc3c;                        //variables for c3c, just the same as above
+0=>int cc3c;
+0=>int oc3c;
+
+1=>float f01c3c;
+1/(tone*tone)=>float f12c3c;
+1/semitone=>float f23c3c;
+1/(tone*tone)=>float f34c3c; 
+1/(tone*semitone)=>float f40c3c;
+
+440*2*tone=>float ffc3c;           
+ffc3c=>float fc3c;                
+
+.204*rap=>float v0c3c;
+5.0/6.0*rap*8=>float v1c3c;
+10.0/9.0*rap*8=>float v2c3c;
+1*rap*8=>float v3c3c;
+(10.0/9.0)*rap*8=>float v4c3c;
+
+v0c3c=>float vc3c;
+
+(2/v0c3c)::second=>dur d0c3c;
+(2/v1c3c)::second=>dur d1c3c;
+(2/v2c3c)::second=>dur d2c3c;
+(2/v3c3c)::second=>dur d3c3c;
+(2/v4c3c)::second=>dur d4c3c;
+
+start=>time t0c3c;
+t0c3c+d0c3c=>time t1c3c;
+t1c3c+d1c3c=>time t2c3c;
+t2c3c+d2c3c=>time t3c3c;
+t3c3c+d3c3c=>time t4c3c;
+
+t4c3c-t1c3c+d4c3c=>dur durationc3c;
+
+vol*1.3*0=>float g0c3c;
+vol*1.3*0.02=>float g1c3c;
+vol*1.3*0.005=>float g2c3c;
+vol*1.3*0.01=>float g3c3c;
+vol*1.3*0.002=>float g4c3c;
+
+g0c3c=>float gc3c;
+
+fc3c => vpc3c.freq;          
+fc3c+vc3c/2 => vbc3c.freq;
+fc3c+vc3c => vsc3c.freq;
+
+gc3c => vpc3c.gain;
+-gc3c*2 => vbc3c.gain;
+gc3c => vsc3c.gain;
+
+                                    // variables for the "swips" voice
+33=> int X;                         // X is an int number that every time takes the value X*seeda + seedb of the preceding X. As the value exceeds the maximum allowed for an int (+9999999999) it restart from below (-9999999999)
+163911=>int seeda;
+62526384=>int seedb;
+float rand;                         // this variable will take the normalized value of X, (X-Xmin)/(Xmax-Xmin), so that it is between 0 abd 1                                  
+
+now+9.9::second/rap=>time startn;   // starting time for the "swips"    
+2::second=>dur restartn;            // duration between the "swips"
+1::second=>dur durationn;           // duration of a "swip"
+
+20000=>float fmax;                  // the frequency for the "swip" is rapidly changeing in the interval (fmin,fmax) chosen with X
+20=>float fmin;
+0=>float fn;                        // actual frequency playing right now
+0.007=>float gn;                    // actual gain playing right now
+0=>float help;                      // just a temp variable helping the computation
+
+0=>bnoise.freq;                     // initialization
+0=>bnoise.gain;
+
+                                    // here starts the main loop, every loop takeing a step, until now exceeds 30''
+while (now<=end)
+    {   
+        if (now<=fermo) {                               // the bass' gain is increasing  
+        vol*0.025*(now-sali)/(fermo-sali)=>bass1.gain;
+        vol*0.025*(now-sali)/(fermo-sali)=>bass2.gain;
+        vol*0.025*(now-sali)/(fermo-sali)=>bass3.gain;
+        }
+        if (now>=scendbi && now<=endb) {                // the bass' gain is decreasing
+        vol*0.025*(endb-now)/(endb-scendbi)=>bass1.gain;
+        vol*0.025*(endb-now)/(endb-scendbi)=>bass2.gain;
+        vol*0.025*(endb-now)/(endb-scendbi)=>bass3.gain;
+        }                                           
+        
+                                                        // here each if statement changes the variables controlling c1c 
+                                                        // the values of now is checked out every time
+                                                        // the repetition of this sequence exhibits lower gain
+        if (now-t0c1c >= d0c1c && nc1c==0) {1=>nc1c; f01c1c*fc1c=>fc1c; v1c1c=>vc1c; g1c1c=>gc1c; t0c1c+durationc1c=>t0c1c;}
+        if (now-t1c1c >= d1c1c && nc1c==1) {2=>nc1c; f12c1c*fc1c=>fc1c; v2c1c=>vc1c; g2c1c=>gc1c; t1c1c+durationc1c=>t1c1c;}
+        if (now-t2c1c >= d2c1c && nc1c==2) {3=>nc1c; f23c1c*fc1c=>fc1c; v3c1c=>vc1c; g3c1c=>gc1c; t2c1c+durationc1c=>t2c1c;}
+        if (now-t3c1c >= d3c1c && nc1c==3) {4=>nc1c; f34c1c*fc1c=>fc1c; v4c1c=>vc1c; g4c1c=>gc1c; t3c1c+durationc1c=>t3c1c;}
+        if (now-t4c1c >= d4c1c && nc1c==4) {0=>nc1c; f40c1c*fc1c=>fc1c; v0c1c=>vc1c; g0c1c=>gc1c; t4c1c+durationc1c=>t4c1c;
+            g0c1c*.3=>g0c1c;
+            g1c1c*.3=>g1c1c;
+            g2c1c*.3=>g2c1c;
+            g3c1c*.3=>g3c1c;
+            g4c1c*.3=>g4c1c;
+            }
+        
+        fc1c => vpc1c.freq;                             // the variables for c1c are updated
+        fc1c+vc1c/2 => vbc1c.freq;
+        fc1c+vc1c => vsc1c.freq;
+        gc1c => vpc1c.gain;
+        -gc1c*2 => vbc1c.gain;
+        gc1c => vsc1c.gain;
+
+                                                        // just the same as above
+        
+        if (now-t0c2c >= d0c2c && notac2c==0) {1=>notac2c; f01c2c*fc2c=>fc2c; v1c2c=>vc2c; g1c2c=>gc2c; t0c2c+durationc2c=>t0c2c;}
+        if (now-t1c2c >= d1c2c && notac2c==1) {2=>notac2c; f12c2c*fc2c=>fc2c; v2c2c=>vc2c; g2c2c=>gc2c; t1c2c+durationc2c=>t1c2c;}
+        if (now-t2c2c >= d2c2c && notac2c==2) {3=>notac2c; f23c2c*fc2c=>fc2c; v3c2c=>vc2c; g3c2c=>gc2c; t2c2c+durationc2c=>t2c2c;}
+        if (now-t3c2c >= d3c2c && notac2c==3) {4=>notac2c; f34c2c*fc2c=>fc2c; v4c2c=>vc2c; g4c2c=>gc2c; t3c2c+durationc2c=>t3c2c;}
+        if (now-t4c2c >= d4c2c && notac2c==4) {0=>notac2c; f40c2c*fc2c=>fc2c; v0c2c=>vc2c; g0c2c=>gc2c; t4c2c+durationc2c=>t4c2c;
+            g0c2c*.5=>g0c2c;
+            g1c2c*.5=>g1c2c;
+            g2c2c*.5=>g2c2c;
+            g3c2c*.5=>g3c2c;
+            g4c2c*.5=>g4c2c;
+            }
+        
+        fc2c => vpc2c.freq;
+        fc2c+vc2c/2 => vbc2c.freq;
+        fc2c+vc2c => vsc2c.freq;
+        gc2c => vpc2c.gain;
+        -gc2c*2 => vbc2c.gain;
+        gc2c => vsc2c.gain;
+        
+                                                        // here the same for c3c
+                                                        // the sequence is now repeated by changing the starting note, the eighth and the gain (the gain is decreasing throug the end)
+        if (now-t0c3c >= d0c3c && nc3c==0) {1=>nc3c; f01c3c*fc3c=>fc3c; v1c3c=>vc3c; g1c3c*((end-now)/20::second)*((end-now)/20::second)=>gc3c; t0c3c+durationc3c=>t0c3c;}
+        if (now-t1c3c >= d1c3c && nc3c==1) {2=>nc3c; f12c3c*fc3c=>fc3c; v2c3c=>vc3c; g2c3c*((end-now)/20::second)*((end-now)/20::second)=>gc3c; t1c3c+durationc3c=>t1c3c;}
+        if (now-t2c3c >= d2c3c && nc3c==2) {3=>nc3c; f23c3c*fc3c=>fc3c; v3c3c=>vc3c; g3c3c*((end-now)/20::second)*((end-now)/20::second)=>gc3c; t2c3c+durationc3c=>t2c3c;}
+        if (now-t3c3c >= d3c3c && nc3c==3) {4=>nc3c; f34c3c*fc3c=>fc3c; v4c3c=>vc3c; g4c3c*((end-now)/20::second)*((end-now)/20::second)=>gc3c; t3c3c+durationc3c=>t3c3c;}
+        if (now-t4c3c >= d4c3c && nc3c==4) 
+            {
+                if (cc3c==0) {1/(tone*semitone)=>f23c3c; 1/(semitone*tone)=>f40c3c;++cc3c;vol*.02=>g1c3c;}
+                else if (cc3c==1) {1/(semitone)=>f23c3c; 1/(semitone*tone)=>f40c3c;++cc3c;}
+                else if (cc3c==2) {1/(tone*semitone)=>f23c3c; 1/(semitone*tone)=>f40c3c;++cc3c;vol*.01=>g1c3c;}
+                else if (cc3c==3) {1/(semitone)=>f23c3c; semitone=>f40c3c;0=>cc3c;}
+                if (oc3c==0) ++oc3c; else {fc3c*4=>fc3c; 0=>oc3c;}
+                
+                0=>nc3c; f40c3c*fc3c=>fc3c; v0c3c=>vc3c; g0c3c=>gc3c; t4c3c+durationc3c=>t4c3c;
+            }
+        
+        fc3c => vpc3c.freq;                             // the variables for c3c are updated
+        fc3c+vc3c/2 => vbc3c.freq;
+        fc3c+vc3c => vsc3c.freq;
+        gc3c => vpc3c.gain;
+        -gc3c*2 => vbc3c.gain;
+        gc3c => vsc3c.gain;
+            
+        X*seeda + seedb => X;                           // the values for X and rand are evaluated
+        X=>rand;
+        (1+ rand/9999999999)/2=>rand;
+            
+        if (now>=startn && now-startn<=durationn)       // this if statement givs a "swip"
+        {
+            (fmin+(fmax-fmin)*((now-startn)/durationn)*((now-startn)/durationn))=>help;
+            help +   (fmax*((now-startn)/durationn)  - help)*rand=>fn;
+            fn=>bnoise.freq;
+            gn*(fmax-fn)/(fmax-fmin)=>bnoise.gain;
+        }
+        else if (now-startn>=durationn && startn+restartn+durationn<=end) startn+restartn=>startn;
+        
+        step=>now;                                      // the step time is taken
+    }
+// THANK YOU FOR READING, HOPING I DIDN'T GIVE YOU AN HARD TIME =D
+    
