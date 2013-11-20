@@ -13,6 +13,8 @@ overallgain=>dac.gain;
 
 60.0=> float overallduration; // in seconds
 
+Math.srandom(7); // 277, 377(I submitted this one), 4, 7 .. Change the seed for having different music
+
 
 fun int ChoseI( int P[]) {   // will return an index i, having a probability proportional to P[i] to be chosen. NOT NORMALIZED
     
@@ -125,7 +127,6 @@ for (0=>int n; n<mixolidian.cap(); ++n) mixolidianoctave[n%7] -36 + 12*(n/7) => 
 
 1=> int basschangecounter; // I first try to use the same for all the voices
 
-Math.srandom(377); // 277, 377
 
 // here the probability distribution for the rythmic pattern
 
